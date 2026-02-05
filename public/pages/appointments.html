@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/img/logo-principal-header.png" type="image/png">
+    <title>Citas | Gino Li Salón & Spa</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <!-- NAVBAR-->
+    <header>
+
+        <nav>
+
+            <h2> Gino Li Salón & Spa</h2>
+
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/pages/services.html">Servicios</a></li>
+                <li><a href="/pages/login.html">Login</a></li>
+            </ul>
+
+        </nav>
+
+    </header>
+
+    <!-- APPOINTMENT -->
+    <section class="appointment">
+
+        <h2>Reservar una cita</h2>
+
+        <form id="appointmentForm">
+
+            <!-- SERVICE -->
+            <label for="service">Servicios</label>
+            <select id="service" required>
+               <option value="">Seleccione un servicio</option>
+            </select>
+
+            <!-- EMPLOYEES -->
+            <label for="employee">Trabajador</label>
+            <select name="employee" required>
+                <option value="">Seleccione un trabajador</option>
+            </select>
+
+            <!-- DATE -->
+            <label for="date">Fecha</label>
+            <input type="date" id="date" required>
+
+            <!-- TIME -->
+            <label for="time">Hora</label>
+            <select id="time" required>
+                <option value="">Seleccione una hora</option>
+            </select>
+
+            <button type="submit">Reservar cita</button>
+
+        </form>
+        
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        
+        <p>©2026 Gino Li Salón & Spa</p>
+        
+    </footer>
+
+</body>
+</html>
