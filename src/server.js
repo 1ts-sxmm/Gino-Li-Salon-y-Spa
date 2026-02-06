@@ -1,11 +1,13 @@
 const express = require('express');
 require('dotenv').config();
-const path = require('path')
+const path = require('path');
+const appointmentsRoutes = require ("./routes/appointmentsRoutes")
 
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use("/api", appointmentsRoutes)
 // Servir contenido estático
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
@@ -15,4 +17,4 @@ const PORT = process.env.PORT || 3000;
 // Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`Ejemplo de aplicación escuchada en el puerto http://localhost:3000/`)
-});
+}); 
