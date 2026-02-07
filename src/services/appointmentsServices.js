@@ -5,7 +5,6 @@ const pool = require("../config/db");
 // Crear citas
 const createAppointments = async (req, res) => {
     try {
-
         const {
             client_name,
             service_id,
@@ -97,23 +96,88 @@ const createAppointments = async (req, res) => {
             duration
         });
 
-    } 
-    catch (error) {
-
+    } catch (error) {
         console.error(error);
         return res.status(500).json({ msg: "Error interno del servidor" });
-
-  }
+    }
 };
 
 // Vista del día
 const getAppointments = async (req, res) => {
-    return res.status(200).json({ msg: "getAppointments OK"});
+    try {
+        const { date } = req.query
+
+        if(!date) {
+            return res.status(400).json({ msg: "Debes enviar ?date=YYYY-MM-DD" })
+        }
+
+        const sql = `
+            SELECT *
+            FROM appointments
+            WHERE appointment_date = ?
+                AND status = 'scheduled'
+            ORDER BY start_time
+        `;
+
+        const [rows] = await pool.query(sql, [date]);
+
+        return res.status(200).json(rows);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Error interno del servidor" })
+    }
 };
 
 // Horas disponibles
 const getAvailableTimes = async (req, res) => {
-    return res.status(200).json({ msg: "getAvaibleTimes OK"});
+    try {
+        const {date, employee_id, service_id } = req.query;
+
+        if(!date || !employee_id || !service_id) {
+            return res.status(400).json({msg: "Debe enviar date, employee_id y/o service_id"});
+        }
+
+        const employeeId = Number(employee_id);
+        const serviceId = Number(service_id)
+
+        if(!Number.isInteger(employeeId) || !Number.isInteger(serviceId)) {
+            return res.status(400).json({msg: "employee_id y service_id deben ser números"})
+        }
+
+        const sql = `SELECT duration
+            FROM services
+            WHERE id = ?;
+        `;
+
+        const [rows] = await pool.query(sql, [serviceId])
+
+        if(rows.length === 0) {
+            return res.status(404).json({msg: "Servicio no existe"})
+        }
+
+        const duration = rows[0].duration;
+
+        const sqlAppointments = `
+            SELECT start_time, end_time
+            FROM appointments
+            WHERE employee_id = ?
+            AND appointment_date = ?
+            AND status = 'scheduled'
+            ORDER BY start_time;
+        `;
+
+        const [appointments] = await pool.query(sqlAppointments, [employeeId, date]);
+
+        return res.status(200).json({
+            duration,
+            appointments
+        });
+
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({msg: "Error interno del servidor"})
+    }
 };
 
 // Eliminar citas

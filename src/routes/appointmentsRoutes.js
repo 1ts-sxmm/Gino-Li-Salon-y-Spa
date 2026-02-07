@@ -9,19 +9,19 @@ const {
     getAppointments,
     getAvailableTimes,
     deleteAppointments
-} = require("../services/appointmentsServices")
+} = require("../services/appointmentsServices");
 
 // Crear citas
-router.post("/appointments", createAppointments)
+router.post("/appointments", createAppointments);
 
 // Vista del día
-router.get("/appointments", getAppointments)
+router.get("/appointments", getAppointments);
 
 // Horas disponibles
-router.get("/appointments/available", getAvailableTimes)
+router.get("/appointments/available", getAvailableTimes);
 
 // Eliminar citas
-router.delete("/appointments/:id", deleteAppointments)
+router.delete("/appointments/:id", deleteAppointments);
 
 // Exportar variable
 module.exports = router;
