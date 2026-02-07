@@ -14,10 +14,10 @@ const {
 // Crear citas
 router.post("/appointments", createAppointments)
 
-// Agarrar citas
+// Vista del día
 router.get("/appointments", getAppointments)
 
-// Agarrar tiempo disponible
+// Horas disponibles
 router.get("/appointments/available", getAvailableTimes)
 
 // Eliminar citas
