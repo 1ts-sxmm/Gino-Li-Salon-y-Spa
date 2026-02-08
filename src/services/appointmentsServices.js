@@ -222,7 +222,50 @@ const getAvailableTimes = async (req, res) => {
 
 // Eliminar citas
 const deleteAppointments = async (req, res) => {
-    return res.status(200).json({ msg: "deleteAppointments OK" });
+    try {
+        const { id } = req.params;
+
+        const Id = Number(id);
+
+        if(!Number.isInteger(Id)) {
+            return res.status(400).json({msg: "Id debe ser número"})
+        }
+
+        const sql = `SELECT id 
+            FROM appointments 
+            WHERE id = ?
+        ;`
+
+        const [rows] = await pool.query(sql, [Id])
+
+        if(rows.length === 0) {
+            return res.status(404).json({msg: "Id no existe"});
+        }
+
+        const sqlDelete = `UPDATE appointments
+            SET status = 'cancelled'
+            WHERE id = ?
+            AND status = 'scheduled';
+        ;`
+
+        const [result] = await pool.query(sqlDelete, [Id]);
+
+        if(result.affectedRows === 0) {
+            return res.status(400).json({ 
+                msg: "La cita ya estaba cancelada o no puede cancelarse", 
+                id: Id 
+            });
+        };
+
+        return res.status(200).json({
+            msg: "Cita cancelada correctamente ✅",
+            id: Id
+        });
+
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({msg: "Error interno del servidor"});
+    }
 };
 
 // Exportar variables
