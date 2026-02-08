@@ -132,7 +132,7 @@ const getAppointments = async (req, res) => {
 // Horas disponibles
 const getAvailableTimes = async (req, res) => {
     try {
-        const {date, employee_id, service_id } = req.query;
+        const { date, employee_id, service_id } = req.query;
 
         if(!date || !employee_id || !service_id) {
             return res.status(400).json({msg: "Debe enviar date, employee_id y/o service_id"});
@@ -169,14 +169,54 @@ const getAvailableTimes = async (req, res) => {
 
         const [appointments] = await pool.query(sqlAppointments, [employeeId, date]);
 
+        const STEP_MIN = 15;
+
+        const OPEN = "09:00:00"
+        const CLOSE = "20:30:00"
+
+        const toMinutes = (time) => {
+            const [h, m] = time.split(":").map(Number);
+            return h * 60 + m;
+        };
+
+        const toTime = (minutes) => {
+            const h = String(Math.floor(minutes / 60)).padStart(2, "0");
+            const m = String(minutes % 60).padStart(2, "0");
+            return `${h}:${m}:00`;
+        };
+
+        const openMin = toMinutes(OPEN);
+        const closeMin = toMinutes(CLOSE);
+
+        const busy = appointments.map(a => ({
+            start: toMinutes(a.start_time),
+            end: toMinutes(a.end_time)
+        }));
+
+        const available = [];
+
+        for (
+            let slotStart = openMin;
+            slotStart + duration <= closeMin;
+            slotStart += STEP_MIN
+        ) {
+            const slotEnd = slotStart + duration;
+
+            const conflict = busy.some(b => slotStart < b.end && slotEnd > b.start)
+
+            if (!conflict) { 
+                available.push(toTime(slotStart)); 
+            }
+        }
+
         return res.status(200).json({
             duration,
-            appointments
+            available
         });
 
     } catch(error) {
         console.error(error);
-        return res.status(500).json({msg: "Error interno del servidor"})
+        return res.status(500).json({msg: "Error interno del servidor"});
     }
 };
 
