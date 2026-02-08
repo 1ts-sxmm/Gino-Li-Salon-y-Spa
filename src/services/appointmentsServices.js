@@ -245,8 +245,8 @@ const deleteAppointments = async (req, res) => {
         const sqlDelete = `UPDATE appointments
             SET status = 'cancelled'
             WHERE id = ?
-            AND status = 'scheduled';
-        ;`
+            AND status = 'scheduled'
+            ;`
 
         const [result] = await pool.query(sqlDelete, [Id]);
 
@@ -255,7 +255,7 @@ const deleteAppointments = async (req, res) => {
                 msg: "La cita ya estaba cancelada o no puede cancelarse", 
                 id: Id 
             });
-        };
+        }
 
         return res.status(200).json({
             msg: "Cita cancelada correctamente ✅",
