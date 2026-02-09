@@ -105,19 +105,32 @@ const createAppointments = async (req, res) => {
 // Vista del día
 const getAppointments = async (req, res) => {
     try {
-        const { date } = req.query
+        const { date } = req.query;
 
         if(!date) {
-            return res.status(400).json({ msg: "Debes enviar ?date=YYYY-MM-DD" })
+            return res.status(400).json({ msg: "Debes enviar ?date=YYYY-MM-DD" });
         }
 
         const sql = `
-            SELECT *
-            FROM appointments
-            WHERE appointment_date = ?
-                AND status = 'scheduled'
-            ORDER BY start_time
-        `;
+            SELECT
+                a.id,
+                a.client_name,
+                a.client_phone,
+                a.notes,
+                a.appointment_date,
+                a.start_time,
+                a.end_time,
+                a.duration,
+                a.status,
+                s.name AS service_name,
+                e.name AS employee_name
+            FROM appointments a
+            JOIN services s ON s.id = a.service_id
+            JOIN employees e ON e.id = a.employee_id
+            WHERE a.appointment_date = ?
+                AND a.status = 'scheduled'
+            ORDER BY a.start_time;
+            `;
 
         const [rows] = await pool.query(sql, [date]);
 
@@ -164,8 +177,8 @@ const getAvailableTimes = async (req, res) => {
             WHERE employee_id = ?
             AND appointment_date = ?
             AND status = 'scheduled'
-            ORDER BY start_time;
-        `;
+            ORDER BY start_time
+        ;`
 
         const [appointments] = await pool.query(sqlAppointments, [employeeId, date]);
 
