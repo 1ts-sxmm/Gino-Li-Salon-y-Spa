@@ -233,6 +233,8 @@ const getAvailableTimes = async (req, res) => {
             available
         });
 
+        return res.status(400)
+
     } catch(error) {
         console.error(error);
         return res.status(500).json({msg: "Error interno del servidor"});
