@@ -8,7 +8,8 @@ const {
     createAppointments,
     getAppointments,
     getAvailableTimes,
-    deleteAppointments
+    deleteAppointments,
+    completeAppointment
 } = require("../services/appointmentsServices");
 
 // Crear citas
@@ -22,6 +23,9 @@ router.get("/appointments/available", getAvailableTimes);
 
 // Eliminar citas
 router.delete("/appointments/:id", deleteAppointments);
+
+// Completar citas
+router.patch("/appointments/:id/complete", completeAppointment);
 
 // Exportar variable
 module.exports = router;
