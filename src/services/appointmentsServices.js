@@ -325,12 +325,13 @@ const completeAppointment = async (req, res) => {
     }
 };
 
+// Ver empleados
 const getEmployees = async (req, res) => {
     try {
         const sql = `
             SELECT id, name
             FROM employees
-            ORDER BY name;
+            ORDER BY name
         ;`
 
         const [rows] = await pool.query(sql);
@@ -343,12 +344,13 @@ const getEmployees = async (req, res) => {
     }
 };
 
+// Ver servicios
 const getServices = async (req, res) => {
     try {
         const sql = `
             SELECT id, name
             FROM services
-            ORDER BY name;
+            ORDER BY name
         ;`
 
         const [rows] = await pool.query(sql);
