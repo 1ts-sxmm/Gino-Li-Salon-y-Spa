@@ -9,7 +9,9 @@ const {
     getAppointments,
     getAvailableTimes,
     deleteAppointments,
-    completeAppointment
+    completeAppointment,
+    getEmployees,
+    getServices
 } = require("../services/appointmentsServices");
 
 // Crear citas

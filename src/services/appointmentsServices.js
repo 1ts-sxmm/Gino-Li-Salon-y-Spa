@@ -10,7 +10,8 @@ const createAppointments = async (req, res) => {
             service_id,
             employee_id,
             appointment_date,
-            start_time
+            start_time,
+            duration_override
         } = req.body;
 
         if (!client_name || !service_id || !employee_id || !appointment_date || !start_time) {
@@ -31,7 +32,23 @@ const createAppointments = async (req, res) => {
             return res.status(404).json({ msg: "Servicio no existe" });
         }
 
-        const duration = rows[0].duration;
+        console.log("duration_override recibido:", duration_override);
+
+        let duration = rows[0].duration; 
+
+        if (duration_override !== undefined && duration_override !== null && duration_override !== "") {
+            const d = Number(duration_override);
+
+            if (!Number.isInteger(d)) {
+                return res.status(400).json({ msg: "duration_override debe ser un número entero (minutos)" });
+            }
+
+            if (d < 5 || d > 300) {
+                return res.status(400).json({ msg: "duration_override fuera de rango (5 a 300 min)" });
+            }
+
+            duration = d;
+        }
 
         const sql2 = "SELECT ADDTIME(?, SEC_TO_TIME(? * 60)) AS end_time";
 
@@ -348,7 +365,7 @@ const getEmployees = async (req, res) => {
 const getServices = async (req, res) => {
     try {
         const sql = `
-            SELECT id, name
+            SELECT id, name, duration, price
             FROM services
             ORDER BY name
         ;`
@@ -369,5 +386,7 @@ module.exports = {
     getAppointments,
     getAvailableTimes,
     deleteAppointments,
-    completeAppointment
+    completeAppointment,
+    getEmployees,
+    getServices
 };

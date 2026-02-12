@@ -38,6 +38,10 @@
                <option value="">Seleccione un servicio</option>
             </select>
 
+            <label for="duration_override">Duración manual (Opcional, calculado en minutos)</label>
+            <input type="number" id="duration_override" min="5" step="5" placeholder="Ej: 60">
+            <small id="durationHint"></small>
+
             <!-- EMPLOYEES -->
             <label for="employee">Trabajador</label>
             <select id="employee" name='employee' required>
@@ -50,7 +54,7 @@
 
             <!-- TIME -->
             <label for="time">Hora</label>
-            <select id="time" name='date' required>
+            <select id="time" name='time' required>
                 <option value="">Seleccione una hora</option>
             </select>
 
@@ -67,5 +71,6 @@
         
     </footer>
 
+    <script src="/js/appointments.js"></script>
 </body>
 </html>
