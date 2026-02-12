@@ -335,7 +335,25 @@ const getEmployees = async (req, res) => {
 
         const [rows] = await pool.query(sql);
 
-        return res.status(200).json({rows})
+        return res.status(200).json(rows)
+        
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({msg: "Error interno del servidor"});
+    }
+};
+
+const getServices = async (req, res) => {
+    try {
+        const sql = `
+            SELECT id, name
+            FROM services
+            ORDER BY name;
+        ;`
+
+        const [rows] = await pool.query(sql);
+
+        return res.status(200).json(rows)
         
     } catch(error) {
         console.error(error);
