@@ -27,5 +27,9 @@ router.delete("/appointments/:id", deleteAppointments);
 // Completar citas
 router.patch("/appointments/:id/complete", completeAppointment);
 
+router.get("/employees", getEmployees);
+
+router.get("/services", getServices);
+
 // Exportar variable
 module.exports = router;

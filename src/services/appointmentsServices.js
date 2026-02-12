@@ -270,16 +270,10 @@ const deleteAppointments = async (req, res) => {
         const [result] = await pool.query(sqlDelete, [Id]);
 
         if(result.affectedRows === 0) {
-            return res.status(400).json({ 
-                msg: "La cita ya estaba cancelada o no puede cancelarse", 
-                id: Id 
-            });
+            return res.status(400).json({ msg: "La cita ya estaba cancelada o no puede cancelarse", id: Id });
         }
 
-        return res.status(200).json({
-            msg: "Cita cancelada correctamente ✅",
-            id: Id
-        });
+        return res.status(200).json({ msg: "Cita cancelada correctamente ✅", id: Id });
 
     } catch(error) {
         console.error(error);
@@ -287,6 +281,7 @@ const deleteAppointments = async (req, res) => {
     }
 };
 
+// Completar citas
 const completeAppointment = async (req, res) => {
     try {
         const { id } = req.params
@@ -324,6 +319,24 @@ const completeAppointment = async (req, res) => {
 
         return res.status(200).json({msg: "La cita se completó correctamente", id: Id})
 
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({msg: "Error interno del servidor"});
+    }
+};
+
+const getEmployees = async (req, res) => {
+    try {
+        const sql = `
+            SELECT id, name
+            FROM employees
+            ORDER BY name;
+        ;`
+
+        const [rows] = await pool.query(sql);
+
+        return res.status(200).json({rows})
+        
     } catch(error) {
         console.error(error);
         return res.status(500).json({msg: "Error interno del servidor"});
