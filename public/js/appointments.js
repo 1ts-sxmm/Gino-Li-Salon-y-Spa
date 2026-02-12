@@ -5,6 +5,7 @@ const timeSelect = document.getElementById("time");
 const form = document.getElementById("appointmentForm");
 const durationOverrideInput = document.getElementById("duration_override");
 const durationHint = document.getElementById("durationHint");
+const priceFinalInput = document.getElementById("price_final");
 
 const todayISO = new Date().toISOString().slice(0, 10);
 
@@ -81,19 +82,17 @@ const loadAvailableTimes = async () => {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-    const payload = {
-        client_name: "Cliente",
-        service_id: Number(serviceSelect.value),
-        employee_id: Number(employeeSelect.value),
-        appointment_date: dateInput.value,
-        start_time: timeSelect.value
-        };
+  const payload = {
+    client_name: "Cliente",
+    service_id: Number(serviceSelect.value),
+    employee_id: Number(employeeSelect.value),
+    appointment_date: dateInput.value,
+    start_time: timeSelect.value,
+    price_final: Number(priceFinalInput.value) // obligatorio
+  };
 
-    const d = durationOverrideInput.value.trim();
-
-    if (d !== "") {
-        payload.duration_override = Number(d);
-    }
+  const d = durationOverrideInput.value.trim();
+  if (d !== "") payload.duration_override = Number(d);
 
   try {
     await fetchJSON("/api/appointments", {
@@ -103,9 +102,9 @@ form.addEventListener("submit", async (e) => {
     });
 
     alert("Cita creada ✅");
-    await loadAvailableTimes(); // refresca horas
+    await loadAvailableTimes();
   } catch (err) {
-    alert(err.message); // aquí verás “cruce” si pasa
+    alert(err.message);
   }
 });
 

@@ -4,3 +4,7 @@
 body {
     background-color: var(--color-principal);
 }
+
+.navegacion-principal {
+    background-color: white;
+}

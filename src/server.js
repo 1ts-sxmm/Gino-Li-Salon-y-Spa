@@ -16,12 +16,17 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 const PORT = process.env.PORT || 3000;
 
 async function testDB() {
-    try {
-        const [rows] = await pool.query("SELECT 1");
-        console.log("✅ MySQL conectado");
-    } catch (err) {
-        console.error("❌ Error conectando a MySQL:", err);
-    }
+  try {
+    const [db] = await pool.query("SELECT DATABASE() AS db");
+    const [tbl] = await pool.query("SHOW TABLES LIKE 'appointments'");
+    const [cols] = await pool.query("SHOW COLUMNS FROM appointments LIKE 'price_final'");
+
+    console.log("✅ MySQL conectado");
+    console.log("DB actual:", db[0].db);
+    console.log("¿Existe appointments?:", tbl.length > 0);
+  } catch (err) {
+    console.error("❌ Error conectando a MySQL:", err);
+  }
 }
 
 testDB();

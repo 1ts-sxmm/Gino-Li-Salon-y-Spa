@@ -11,16 +11,8 @@
     <!-- NAVBAR-->
     <header>
 
-        <nav>
-
-            <h2> Gino Li Salón & Spa</h2>
-
-            <ul>
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/pages/services.html">Servicios</a></li>
-                <li><a href="/pages/login.html">Login</a></li>
-            </ul>
-
+        <nav class="navegacion-principal">
+            <img src="../img/logo-principal.jpeg" alt="main-img">
         </nav>
 
     </header>
@@ -38,10 +30,11 @@
                <option value="">Seleccione un servicio</option>
             </select>
 
-            <label for="duration_override">Duración manual (Opcional, calculado en minutos)</label>
+            <!-- TIEMPO DE SERVICIO (OPCIONAL) -->
+            <label for="duration_override">Duración del servicio (Manual en minutos)</label>
             <input type="number" id="duration_override" min="5" step="5" placeholder="Ej: 60">
             <small id="durationHint"></small>
-
+            
             <!-- EMPLOYEES -->
             <label for="employee">Trabajador</label>
             <select id="employee" name='employee' required>
@@ -57,6 +50,10 @@
             <select id="time" name='time' required>
                 <option value="">Seleccione una hora</option>
             </select>
+
+            <!-- PRECIO FINAL (OBLIGATORIO) -->
+            <label for="price_final">Precio final (manual)</label>
+            <input type="number" id="price_final" min="0" step="0.5" required placeholder="Ej: 50">
 
             <button type="submit">Reservar cita</button>
 

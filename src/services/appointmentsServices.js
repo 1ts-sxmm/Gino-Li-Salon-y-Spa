@@ -11,11 +11,22 @@ const createAppointments = async (req, res) => {
             employee_id,
             appointment_date,
             start_time,
-            duration_override
+            duration_override,
+            price_final
         } = req.body;
 
-        if (!client_name || !service_id || !employee_id || !appointment_date || !start_time) {
+        if (!client_name || !service_id || !employee_id || !appointment_date || !start_time || price_final === undefined || price_final === null || price_final === "") {
             return res.status(400).json({ msg: "Faltan datos obligatorios" });
+        }
+
+        const price = Number(price_final)
+
+        if (Number.isNaN(price)) {
+            return res.status(400).json({msg: "price_final debe ser un número"});
+        }
+
+        if (price < 0) {
+            return res.status(400).json({msg: "El precio no puede ser negativo"});
         }
 
         const serviceId = Number(service_id);
@@ -32,8 +43,6 @@ const createAppointments = async (req, res) => {
             return res.status(404).json({ msg: "Servicio no existe" });
         }
 
-        console.log("duration_override recibido:", duration_override);
-
         let duration = rows[0].duration; 
 
         if (duration_override !== undefined && duration_override !== null && duration_override !== "") {
@@ -49,7 +58,7 @@ const createAppointments = async (req, res) => {
 
             duration = d;
         }
-
+        
         const sql2 = "SELECT ADDTIME(?, SEC_TO_TIME(? * 60)) AS end_time";
 
         const [rows2] = await pool.query(sql2, [start_time, duration]);
@@ -87,8 +96,8 @@ const createAppointments = async (req, res) => {
 
         const insertSql = `
             INSERT INTO appointments
-            (client_name, service_id, employee_id, appointment_date, start_time, end_time, duration)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (client_name, service_id, employee_id, appointment_date, start_time, end_time, duration, price_final)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const [result] = await pool.query(insertSql, [
@@ -98,7 +107,8 @@ const createAppointments = async (req, res) => {
             appointment_date,
             start_time,
             end_time,
-            duration
+            duration,
+            price
         ]);
 
         return res.status(201).json({
@@ -110,7 +120,8 @@ const createAppointments = async (req, res) => {
             appointment_date,
             start_time,
             end_time,
-            duration
+            duration,
+            price_final: price
         });
 
     } catch (error) {
@@ -137,6 +148,7 @@ const getAppointments = async (req, res) => {
                 a.end_time,
                 a.duration,
                 a.status,
+                a.price_final,
                 s.name AS service_name,
                 e.name AS employee_name
             FROM appointments a
